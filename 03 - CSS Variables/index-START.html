@@ -21,7 +21,22 @@
   <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
 
   <style>
-
+    :root {
+      --base: #ffc600;
+      --spacing: 10px;
+      --blur: 10px;
+    }
+    
+    img {
+      padding: var(--spacing);
+      background: var(--base);
+      filter: blur(var(--blur));
+    }
+    
+    .hl { 
+      --base: #ffc600; /* local variable overrides global */
+      color: var(--base);
+    }
     /*
       misc styles, nothing to do with CSS variables
     */
@@ -45,6 +60,29 @@
   </style>
 
   <script>
+    const inputs = document.querySelectorAll('.controls input')
+
+    function handleUpdate() {
+      const suffix = this.dataset.sizing || '';
+      document.documentElement.style.setProperty(`--${this.name}`, this.value + suffix);
+    }
+
+    inputs.forEach(input => {
+      // @bug
+      // only triggered when the click event finishes not while the value is changing dynamically
+      // only triggered after color picker window is closed
+      // input.addEventListener('change', handleUpdate)
+      
+      // triggered when mouse moves even if value is not changed
+      // only triggered after color picker window is closed then mouse moves on the element
+      // input.addEventListener('mousemove', handleUpdate) 
+
+      // @fix
+      // triggered when value changes through clicking, dragging or through keyboard arrows
+      // triggered while color is changing dynamically
+      // Internet Explorer 9: paritial support - only supports input of type text and password
+      input.addEventListener('input', handleUpdate)
+    })
   </script>
 
 </body>
